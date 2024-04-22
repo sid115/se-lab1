@@ -1,0 +1,46 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Dependency files
+*.d
+
+# IDE generated files
+*.user
+*.suo
+*.sdf
+*.opensdf
+*.ipch
+*.ide
+.vs/
+.vscode/
+*.sz
+
+# Build directories
+Debug/
+Release/
+build/
+out/
+output/

@@ -53,6 +53,9 @@ git clone https://github.com/sid115/se-lab1.git
 
 ### Compiling
 
+> [!TIP]
+> If you have never done this before, read [this](docs/make.md) guide, which covers the basics of compiling this project from the command line.
+
 Compile this project using the included build script:
 ```bash
 cd se-lab1
@@ -74,6 +77,5 @@ Run the compiled program using:
 ./output/main
 ```
 
-### Pushing Changes
-
-Read [these](docs/git.md) instructions to push changes to this repository on the Linux command line.
+> [!TIP]
+> Read [these](docs/git.md) instructions to learn about pushing changes to this repository on the Linux command line.

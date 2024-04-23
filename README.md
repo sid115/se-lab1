@@ -44,6 +44,9 @@ The repository contains the following files and directories:
 
 The following instructions require a Unix-like environment.
 
+> [!TIP]
+> If you are new the command line, read [this](docs/cli.md) guide, which covers the basics of using the Linux command line.
+
 ### Cloning
 
 Clone this repository to your local machine using:
@@ -54,7 +57,7 @@ git clone https://github.com/sid115/se-lab1.git
 ### Compiling
 
 > [!TIP]
-> If you have never done this before, read [this](docs/make.md) guide, which covers the basics of compiling this project from the command line.
+> If you have never done this before, read [this](docs/make.md) guide, which covers the basics of compiling this project from the command line in more detail.
 
 Compile this project using the included build script:
 ```bash

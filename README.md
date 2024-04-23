@@ -9,6 +9,17 @@ This repository contains the source code for the first lab of the Software Engin
 
 Let's consider a typical fully automatic coffee machine for home and office use. Obviously, it's a mere emulation of a fully automatic coffee machine, in other words, all the processing of the Hardware components is strongly simplified, e.g. the processing of the brewing group or the grinder. For instance, we assume, that either the estimated result or a typical error occurs after a typical processing period has passed. In case you modify the software system, you have to ensure to adapt or rather expand the emulation of the hardware component's processing.
 
+## Overview
+
+The repository contains the following files and directories:
+
+- `Makefile`: Makefile for compiling the source code
+- `README.md`: This file
+- `build.sh`: Build script for compiling the source code
+- `include/`: Header files for the coffee machine software
+- `src/`: Source code for the coffee machine software
+- `vpuml/`: Visual Paradigm project files
+
 ## Tasks
 
 1. Software Analysis via Visual Paradigm
@@ -22,6 +33,11 @@ Let's consider a typical fully automatic coffee machine for home and office use.
     1. Consider a split of the brewing system class into at least two useful entities and adapt your model accordingly. 
     1. Generate your refactored software system and add missing source code. 
     1. Use Visual Studio debugger to prove that the refactored software system behaves correctly. 
+
+## Todo
+
+- [] vessel flash memory: stores coffee bean's sort and mass of contained beans
+- [] vessel refill: user enters coffee bean's sort and machine weighs contained beans
 
 ## Development
 

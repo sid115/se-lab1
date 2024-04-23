@@ -39,7 +39,7 @@ git clone https://github.com/sid115/se-lab1.git
 Compile this project using the included build script:
 ```bash
 cd se-lab1
-build.sh
+./build.sh
 ```
 
 > [!IMPORTANT]

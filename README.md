@@ -25,7 +25,7 @@ Let's consider a typical fully automatic coffee machine for home and office use.
 
 ## Development
 
-The following instructions requiere a Unix-like environment.
+The following instructions require a Unix-like environment.
 
 ### Cloning
 
@@ -43,7 +43,7 @@ build.sh
 ```
 
 > [!IMPORTANT]
-> `build.sh` uses `bear` to generate the `compile_commands.json` file. Make sure to have `bear` installed on your system.If you don't have `bear` installed, you can compile the project manually using `make`:
+> `build.sh` uses `bear` to generate the `compile_commands.json` file. Make sure to have `bear` installed on your system. If you don't have `bear` installed, you can compile the project manually using `make`:
 > ```bash
 > cd se-lab1
 > make

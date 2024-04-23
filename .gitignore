@@ -38,6 +38,7 @@
 .cache/
 .vs/
 .vscode/
+compile_commands.json
 
 # Build directories
 Debug/

@@ -36,8 +36,8 @@ The repository contains the following files and directories:
 
 ## Todo
 
-- [] vessel flash memory: stores coffee bean's sort and mass of contained beans
-- [] vessel refill: user enters coffee bean's sort and machine weighs contained beans
+- [ ] vessel flash memory: stores coffee bean's sort and mass of contained beans
+- [ ] vessel refill: user enters coffee bean's sort and machine weighs contained beans
 
 ## Development
 

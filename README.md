@@ -36,11 +36,19 @@ git clone https://github.com/sid115/se-lab1.git
 
 ### Compiling
 
-Compile this project using the included Makefile:
+Compile this project using the included build script:
 ```bash
 cd se-lab1
-make
+build.sh
 ```
+
+> [!IMPORTANT]
+> `build.sh` uses `bear` to generate the `compile_commands.json` file. Make sure to have `bear` installed on your system.If you don't have `bear` installed, you can compile the project manually using `make`:
+> ```bash
+> cd se-lab1
+> make
+> ```
+> Please note that clangd requires the `compile_commands.json` file to work properly.
 
 ### Running
 

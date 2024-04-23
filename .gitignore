@@ -28,15 +28,16 @@
 *.d
 
 # IDE generated files
-*.user
-*.suo
-*.sdf
-*.opensdf
-*.ipch
 *.ide
+*.ipch
+*.opensdf
+*.sdf
+*.suo
+*.sz
+*.user
+.cache/
 .vs/
 .vscode/
-*.sz
 
 # Build directories
 Debug/

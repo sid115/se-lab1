@@ -16,6 +16,7 @@ The repository contains the following files and directories:
 - `Makefile`: Makefile for compiling the source code
 - `README.md`: This file
 - `build.sh`: Build script for compiling the source code
+- `docs/`: Documentation files
 - `include/`: Header files for the coffee machine software
 - `src/`: Source code for the coffee machine software
 - `vpuml/`: Visual Paradigm project files
@@ -72,3 +73,7 @@ Run the compiled program using:
 ```bash
 ./output/main
 ```
+
+### Pushing Changes
+
+Read [these](docs/git.md) instructions to push changes to this repository on the Linux command line.

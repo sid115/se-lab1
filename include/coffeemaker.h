@@ -37,13 +37,14 @@ class Coffeemaker
 {	
 	public:
 		void Screen ();
+        void ServiceScreen ();
+        void handleServiceScreen (sVessel vessel);
 		void run ();
 		bool brewCup (sStrength aType, sCupsize bType, sVessel cType);
 		bool descale ();
         bool weighCoffee (sVessel vessel, int targetWeightG);
-        bool refillCoffee (sVessel vessel, int targetWeightG);
-        bool setCoffeeSort (sVessel vessel, sCoffeeSort sort);
         storageVessel* changeVessel ();
+        bool refillVessel (sVessel vessel, int targetWeightG);
 		void removeCup ();
 		void Ready ();
 		void CleaningError ();

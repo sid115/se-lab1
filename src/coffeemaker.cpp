@@ -6,6 +6,7 @@
  *--------------------------------------------------------------------------------*/
 //..end "File Description"
 
+#include "coffeemaker.h"
 #include "stdafx.h"
 #include <fstream>
 #include <nlohmann/json.hpp>
@@ -112,14 +113,6 @@ bool Coffeemaker::weighCoffee(sVessel vessel, int targetWeightG)
     return true; // no errors expected
 }
 
-bool Coffeemaker::setCoffeeSort(sVessel vessel, sCoffeeSort sort)
-{
-    if (vessels[vessel] == NULL) return false; // error: no storage vessel at this index
-
-    vessels[vessel]->setSort(sort);
-    return true; // no errors expected
-}
-
 storageVessel* Coffeemaker::changeVessel()
 {
     float weightG;
@@ -133,6 +126,32 @@ storageVessel* Coffeemaker::changeVessel()
     sort = j.value("sort", sCoffeeSort::Arabica);
 
     return new storageVessel(weightG, sort);
+}
+
+bool Coffeemaker::refillVessel(sVessel vessel, int targetWeightG)
+{
+    if (vessels[vessel] == NULL) return false; // error: no storage vessel at this index
+    
+    // limit the target weight to the maximum weight
+    if (targetWeightG > MAXWEIGHT) targetWeightG = MAXWEIGHT;
+
+    // open lid
+    vessels[vessel]->openLid();
+
+    // dummy to simulate the refill process
+    vessels[vessel]->setWeightG(targetWeightG);
+
+    // Weigh the coffee beans
+    weighCoffee(vessel, targetWeightG);
+
+    // Check if the vessel is full
+    if (targetWeightG >= MAXWEIGHT) vessels[vessel]->setIsFull(true);
+    else vessels[vessel]->setIsFull(false);
+
+    // close lid
+    vessels[vessel]->closeLid();
+
+    return true; // no errors expected
 }
 
 void Coffeemaker::removeCup (){
@@ -208,7 +227,7 @@ bool Coffeemaker::descale (){
 
 void Coffeemaker::Screen(void){
     CLS;
-	CURPOSTEXT(1,      1, "Coffeemachine - (c) 2024-04 F07");
+	CURPOSTEXT(1,      1, "Coffeemachine - (c) 2024 F07");
 	CURPOSTEXT(2,      1, "-----------------------------------------------------------------------------");
 	CURPOSGREENTEXT(4, 1, "Status : Ready                                                               ");
 	CURPOSGREENTEXT(5, 1, "Note   : Please select                                                       ");
@@ -227,6 +246,112 @@ void Coffeemaker::Screen(void){
 	CURPOSTEXT(18,	   1, "Service Mode              (S)");
 	CURPOSTEXT(20,     1, "Your Choice               < >");
 	CURPOSTEXT(21,     1, "-----------------------------------------------------------------------------");
+}
+
+void Coffeemaker::ServiceScreen(void) 
+{
+    CLS;
+    CURPOSTEXT(1,      1, "Coffeemachine - Service Mode - (c) 2024 F07");
+    CURPOSTEXT(2,      1, "-----------------------------------------------------------------------------");
+    CURPOSGREENTEXT(4, 1, "Status : Ready                                                               ");
+    CURPOSGREENTEXT(5, 1, "Note   : Please select                                                       ");
+	CURPOSGREENTEXT(6, 1, "Setting: Cup Size: N/A,      Strength: N/A,     Vessel: LEFT                 ");
+    CURPOSGREENTEXT(7, 1, "Your selected Coffeesort is EMPTY                                            ");
+	//X                    1234567890          1234567890          1234567890          1234567890
+	//X                              1234567890          1234567890          1234567890          1234567
+    CURPOSTEXT(9,      1, "-----------------------------------------------------------------------------");
+    CURPOSTEXT(11,     1, "Select Vessel:       left (L),   right (R)                                   ");
+    CURPOSTEXT(12,     1, "Clean machine             (c)");
+    CURPOSTEXT(13,     1, "Change vessel             (v)");
+    CURPOSTEXT(14,     1, "Refill vessel             (r)");
+    CURPOSTEXT(15,     1, "Exit Service Mode         (x)");
+    CURPOSTEXT(17,     1, "Your Choice               < >");
+    CURPOSTEXT(19,     1, "-----------------------------------------------------------------------------");
+}
+
+void Coffeemaker::handleServiceScreen(sVessel vessel) {
+    char serviceCommand = ' ';
+    sVessel vv = leftVessel;
+    const char vvtext[][6]={"LEFT ", "RIGHT"};
+    const char vcstext[][12] = { // coffee sort names
+        "Arabica    ",
+        "Robusta    ",
+        "Liberica   ",
+        "Excelsa    ",
+        "Bourbon    ",
+        "Typica     ",
+        "Caturra    ",
+        "Catimor    ",
+        "Gesha      ", 
+        "Pacamara   "
+    };
+	char chosenkeyclear[2] = " ";
+
+    ServiceScreen();
+
+    do {
+        CURPOS(17, 28);
+        serviceCommand = getch();
+        switch (serviceCommand) {
+            case 'L': {
+                vv = leftVessel;
+                CURPOSGREENTEXT(6,  57, vvtext[leftVessel]); CURPOS(6, 1);
+                if(vessels[vv] != NULL) {
+                    CURPOSGREENTEXT(7, 29, vcstext[vessels[vv]->getSort()]); 
+                } else {
+                    CURPOSGREENTEXT(7, 29, "EMPTY      ");
+                }
+                CURPOS(6, 1);
+                CURPOSGREENTEXT(20, 28, chosenkeyclear);
+                break;
+            }
+            case 'R': {
+                vv = rightVessel;
+                CURPOSGREENTEXT(6, 57, vvtext[rightVessel]); CURPOS(6, 1);
+                if(vessels[vv] != NULL) {
+                    CURPOSGREENTEXT(7, 29, vcstext[vessels[vv]->getSort()]); 
+                } else {
+                    CURPOSGREENTEXT(7, 29, "EMPTY      ");
+                }
+                CURPOS(6, 1);
+                CURPOSGREENTEXT(20, 28, chosenkeyclear);
+                break;
+            }
+            case 'c': {
+                // Call the function that cleans the machine
+                //cleanMachine();
+		        CURPOSGREENTEXT(5,  10, "Machine has been cleaned.                       ");
+                break;
+            }
+            case 'v': {
+                // Call the function that changes the vessel
+                vessels[vv] = changeVessel();
+                if(vessels[vv] != NULL) {
+                    CURPOSGREENTEXT(7, 29, vcstext[vessels[vv]->getSort()]); 
+                } else {
+                    CURPOSGREENTEXT(7, 29, "EMPTY      ");
+                }
+                CURPOS(6, 1);
+                CURPOSGREENTEXT(20, 28, chosenkeyclear);
+                break;
+            }
+            case 'r': {
+                // Call the function that refills the vessel
+	            if (!refillVessel(vv, MAXWEIGHT)) {
+	            	mStatus = sError;
+	            	CURPOSGREENTEXT(4,  10, sstext[sError]);
+	            	CURPOSGREENTEXT(5,  10, "Error! No Vessel in selected slot.                ");
+	            } else {
+		            CURPOSGREENTEXT(5,  10, "Vessel has been refilled.                   ");
+                }
+                break;
+            }
+            default: break;
+        }
+    } while(serviceCommand != 'x');
+
+    // Once exiting the service screen, call original screen
+    Screen();
 }
 
 void Coffeemaker::run (){
@@ -340,6 +465,10 @@ void Coffeemaker::run (){
                 break;
             }
 			case 'S': {
+                handleServiceScreen(vv);
+                CURPOSGREENTEXT(20, 28, chosenkeyclear);
+                break;
+
                 vessels[vv] = changeVessel();
                 if(vessels[vv] != NULL) {
                     CURPOSGREENTEXT(7, 29, vcstext[vessels[vv]->getSort()]); 

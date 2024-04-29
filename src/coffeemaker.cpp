@@ -162,17 +162,18 @@ void Coffeemaker::Screen(void){
 	CURPOSTEXT(2,      1, "-----------------------------------------------------------------------------");
 	CURPOSGREENTEXT(4, 1, "Status : Ready                                                               ");
 	CURPOSGREENTEXT(5, 1, "Note   : Please select                                                       ");
-	CURPOSGREENTEXT(6, 1, "Setting: Cup Size: REGULAR,  Strength: MEDIUM                                ");
+	CURPOSGREENTEXT(6, 1, "Setting: Cup Size: REGULAR,  Strength: MEDIUM,  Vessel: LEFT                 ");
 	//X                    1234567890          1234567890          1234567890          1234567890
 	//X                              1234567890          1234567890          1234567890          1234567
 	CURPOSTEXT(8,      1, "-----------------------------------------------------------------------------");
 	CURPOSTEXT(10,     1, "Select Cup Size:     tiny (t), regular (r),  large (l)                       ");
 	CURPOSTEXT(11,     1, "Select Strength: delicate (d), medium  (m), strong (s)                       ");
-	CURPOSTEXT(12,     1, "Produce coffee            (p)");
-	CURPOSTEXT(13,     1, "Cup removed               (c)");
-	CURPOSTEXT(14,     1, "Descale                   (a)");
-	CURPOSTEXT(15,     1, "Exit programm             (x)");
-	CURPOSTEXT(17,     1, "Your Choice               < >");
+    CURPOSTEXT(12,     1, "Select Vessel:       left (L),   right (R)                                   ");
+	CURPOSTEXT(13,     1, "Produce coffee            (p)");
+	CURPOSTEXT(14,     1, "Cup removed               (c)");
+	CURPOSTEXT(15,     1, "Descale                   (a)");
+	CURPOSTEXT(16,     1, "Exit programm             (x)");
+	CURPOSTEXT(18,     1, "Your Choice               < >");
 	CURPOSTEXT(19,     1, "-----------------------------------------------------------------------------");
 }
 
@@ -181,14 +182,16 @@ void Coffeemaker::run (){
 	char theCommand =' ';
 	sCupsize vc = regularCup;
 	sStrength vs = sMedium;
+    sVessel vv = leftVessel;
 	char vctext[][8]={"TINY   ",  "REGULAR", "LARGE  "};
 	char vstext[][9]={"DELICATE", "MEDIUM  ","STRONG  "};
+    char vvtext[][6]={"LEFT ", "RIGHT"};
 	char chosenkeyclear[2] = " ";
 	
 	Screen();
 	
 	do{
-		CURPOS(17, 28);
+		CURPOS(18, 28);
 		theCommand = getch();
 		switch (theCommand){
 			case 't': {
@@ -230,7 +233,7 @@ void Coffeemaker::run (){
 			case 'p': {
 				CURPOSTEXT(12, 32, "            ");
 				CURPOSGREENTEXT(17, 28, chosenkeyclear);
-				drinkable = brewCup(vs, vc);
+				drinkable = brewCup(vs, vc); // TODO: Add vessel to brewCup
 				break;
 			}
 			case 'c': {
@@ -248,9 +251,19 @@ void Coffeemaker::run (){
 				Ready();
 				break;
 			}
-		}
-
-		
-		} while(theCommand != 'x');
+            case 'L': {
+                vv = leftVessel;
+                CURPOSGREENTEXT(6,  57, vvtext[leftVessel]); CURPOS(6, 1);
+                CURPOSGREENTEXT(17, 28, chosenkeyclear);
+                break;
+            }
+            case 'R': {
+                vv = rightVessel;
+                CURPOSGREENTEXT(6,  57, vvtext[rightVessel]); CURPOS(6, 1);
+                CURPOSGREENTEXT(17, 28, chosenkeyclear);
+                break;
+            }
+        }
+	} while(theCommand != 'x');
 	CURPOS(20,1);
 }

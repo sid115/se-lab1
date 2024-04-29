@@ -25,6 +25,7 @@ typedef struct {
 } Consumptionrate;
 typedef enum {sDelicate=0, sMedium, sStrong} sStrength;
 typedef enum {smallCup=0, regularCup, largeCup} sCupsize;
+typedef enum {leftVessel=0, rightVessel} sVessel;
 
 class Grinder;
 class Brewingsystem;

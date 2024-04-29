@@ -75,7 +75,7 @@ bool Coffeemaker::brewCup (sStrength aType, sCupsize bType, sVessel cType) {
 	nanosleep(&productionDuration, &rmD);
 
 	// Boil up water
-	ActualTemperature = mBrewingsystemHandle->heatupWatertank(SETTEMPERATURE);
+	ActualTemperature = mBrewingsystemHandle->mHeaterHandle->heatupWatertank(SETTEMPERATURE);
 	if (abs(ActualTemperature-SETTEMPERATURE)>(EPSREL * SETTEMPERATURE)){
 		goodQuality = false;
 	}
@@ -157,7 +157,7 @@ bool Coffeemaker::refillVessel(sVessel vessel, int targetWeightG)
 void Coffeemaker::removeCup (){
 	if (mStatus == sBrewing){
 		//Preheat water tank to Tanktemperature
-		mBrewingsystemHandle->heatupWatertank(TANKTEMPERATURE);
+		mBrewingsystemHandle->mHeaterHandle->heatupWatertank(TANKTEMPERATURE);
 
 		// Change of state after sReady
 		mStatus = sReady;
@@ -422,7 +422,11 @@ void Coffeemaker::run (){
 			case 'p': {
 				CURPOSTEXT(12, 32, "            ");
 				CURPOSGREENTEXT(20, 28, chosenkeyclear);
-				drinkable = brewCup(vs, vc, vv);
+                if(vessels[vv] != NULL) {
+				    drinkable = brewCup(vs, vc, vv);
+                } else {
+		            CURPOSGREENTEXT(5,  10, "Slot is empty.                                 ");
+                }
 				break;
 			}
 			case 'c': {

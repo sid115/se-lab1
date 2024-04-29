@@ -1,27 +1,44 @@
-#include "storageVessel.h"
+
+//..begin "File Description"
+/*--------------------------------------------------------------------------------*
+   Filename   : storageVessel.cpp
+   Description: 
+ *--------------------------------------------------------------------------------*/
+//..end "File Description"
+
 #include "stdafx.h"
-#include "coffeeSort.h"
+#include "storageVessel.h"
 
-storageVessel::storageVessel(){
-
+storageVessel::storageVessel(float weightG, sCoffeeSort sort)
+{
+    this->weightG = weightG;
+    this->sort = sort;
+    this->isFull = (weightG == MAXWEIGHT) ? true : false;
+    this->isOpen = false;
 }
 
-void storageVessel::changeStorage() {
-	// TODO - implement storageVessel::changeStorage
-	throw "Not yet implemented";
+storageVessel::~storageVessel() {}
+
+bool storageVessel::openLid()
+{
+    if (isOpen) return false;
+
+    isOpen = true;
+    return true;
 }
 
-float storageVessel::weightCoffee() {
-	// TODO - implement storageVessel::weightCoffee
-	throw "Not yet implemented";
+bool storageVessel::closeLid()
+{
+    if (!isOpen) return false;
+
+    isOpen = false;
+    return true;
 }
 
-void storageVessel::addCoffeebeans() {
-	// TODO - implement storageVessel::addCoffeebeans
-	throw "Not yet implemented";
-}
-
-bool storageVessel::useCoffeebeans() {
-	// TODO - implement storageVessel::useCoffeebeans
-	throw "Not yet implemented";
-}
+bool storageVessel::getIsFull() { return isFull; }
+void storageVessel::setIsFull(bool isFull) { this->isFull = isFull; }
+bool storageVessel::getIsOpen() { return isOpen; }
+sCoffeeSort storageVessel::getSort() { return sort; }
+void storageVessel::setSort(sCoffeeSort sort) { this->sort = sort; }
+float storageVessel::getWeightG() { return weightG; }
+void storageVessel::setWeightG(float weightG) { this->weightG = weightG; }

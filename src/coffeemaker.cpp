@@ -21,6 +21,7 @@ const char Coffeemaker::sstext[4][17]={"READY         ", "PRODUCE COFFEE", "DESC
 Coffeemaker::Coffeemaker(void){
 	mGrinderHandle = new Grinder;
 	mBrewingsystemHandle = new Brewingsystem;
+    vessels[leftVessel] = vessels[rightVessel] = NULL;
 	mStatus = sReady;
 	CURPOSTEXT(4,  10, sstext[sReady]);
 }
@@ -83,6 +84,29 @@ bool Coffeemaker::brewCup (sStrength aType, sCupsize bType){
 	}
 
 	return (goodQuality);
+}
+
+bool Coffeemaker::weighCoffee(sVessel vessel, int targetWeightG)
+{
+    if (vessels[vessel] == NULL) return false; // error: no storage vessel at this index
+    if (vessels[vessel]->getIsOpen()) return false; // error: storage vessel is open
+    
+    // Actually implement the weighing process by communicating with the coffee maker's scale
+    vessels[vessel]->setWeightG(targetWeightG);
+
+    // Check if the vessel is full
+    if (targetWeightG >= MAXWEIGHT) vessels[vessel]->setIsFull(true);
+    else vessels[vessel]->setIsFull(false);
+
+    return true; // no errors expected
+}
+
+bool Coffeemaker::setCoffeeSort(sVessel vessel, sCoffeeSort sort)
+{
+    if (vessels[vessel] == NULL) return false; // error: no storage vessel at this index
+
+    vessels[vessel]->setSort(sort);
+    return true; // no errors expected
 }
 
 void Coffeemaker::removeCup (){

@@ -18,11 +18,13 @@
 //..end "pragma"
 
 #include "globaldefines.h"
+#include "storageVessel.h"
 
 typedef struct {
 	int mlWater;
 	int gCoffeegrounds;
 } Consumptionrate;
+
 typedef enum {sDelicate=0, sMedium, sStrong} sStrength;
 typedef enum {smallCup=0, regularCup, largeCup} sCupsize;
 typedef enum {leftVessel=0, rightVessel} sVessel;
@@ -37,6 +39,9 @@ class Coffeemaker
 		void run ();
 		bool brewCup (sStrength aType, sCupsize bType);
 		bool descale ();
+        bool weighCoffee (sVessel vessel, int targetWeightG);
+        bool refillCoffee (sVessel vessel, int targetWeightG);
+        bool setCoffeeSort (sVessel vessel, sCoffeeSort sort);
 		void removeCup ();
 		void Ready ();
 		void CleaningError ();
@@ -50,6 +55,7 @@ class Coffeemaker
 		ssSystem mStatus;
 		Grinder * mGrinderHandle;
 		Brewingsystem * mBrewingsystemHandle;
+        storageVessel * vessels[2];
 		/**
 		Setting water and coffee grounds amount according to selected cup size and coffee strength
 		Lines: Strength (delictae, medium, strong)

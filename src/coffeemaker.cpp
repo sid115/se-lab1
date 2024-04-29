@@ -7,6 +7,8 @@
 //..end "File Description"
 
 #include "stdafx.h"
+#include <fstream>
+#include <nlohmann/json.hpp>
 
 const Consumptionrate Coffeemaker::mConsumptionrate[3][3]
 = { //tiny, regular , large
@@ -109,6 +111,20 @@ bool Coffeemaker::setCoffeeSort(sVessel vessel, sCoffeeSort sort)
     return true; // no errors expected
 }
 
+storageVessel* Coffeemaker::changeVessel()
+{
+    float weightG;
+    sCoffeeSort sort;
+
+    std::ifstream ifs(VESSEL_FILE);
+    nlohmann::json j;
+
+    weightG = j["weightG"];
+    sort = j["sort"];
+
+    return new storageVessel(weightG, sort);
+}
+
 void Coffeemaker::removeCup (){
 	if (mStatus == sBrewing){
 		//Preheat water tank to Tanktemperature
@@ -187,18 +203,20 @@ void Coffeemaker::Screen(void){
 	CURPOSGREENTEXT(4, 1, "Status : Ready                                                               ");
 	CURPOSGREENTEXT(5, 1, "Note   : Please select                                                       ");
 	CURPOSGREENTEXT(6, 1, "Setting: Cup Size: REGULAR,  Strength: MEDIUM,  Vessel: LEFT                 ");
+	CURPOSGREENTEXT(7, 1, "Your selected Coffeesort is 													");//Spalte 29
 	//X                    1234567890          1234567890          1234567890          1234567890
 	//X                              1234567890          1234567890          1234567890          1234567
-	CURPOSTEXT(8,      1, "-----------------------------------------------------------------------------");
-	CURPOSTEXT(10,     1, "Select Cup Size:     tiny (t), regular (r),  large (l)                       ");
-	CURPOSTEXT(11,     1, "Select Strength: delicate (d), medium  (m), strong (s)                       ");
-    CURPOSTEXT(12,     1, "Select Vessel:       left (L),   right (R)                                   ");
-	CURPOSTEXT(13,     1, "Produce coffee            (p)");
-	CURPOSTEXT(14,     1, "Cup removed               (c)");
-	CURPOSTEXT(15,     1, "Descale                   (a)");
-	CURPOSTEXT(16,     1, "Exit programm             (x)");
-	CURPOSTEXT(18,     1, "Your Choice               < >");
-	CURPOSTEXT(19,     1, "-----------------------------------------------------------------------------");
+	CURPOSTEXT(9,      1, "-----------------------------------------------------------------------------");
+	CURPOSTEXT(11,     1, "Select Cup Size:     tiny (t), regular (r),  large (l)                       ");
+	CURPOSTEXT(12,     1, "Select Strength: delicate (d), medium  (m), strong (s)                       ");
+    CURPOSTEXT(13,     1, "Select Vessel:       left (L),   right (R)                                   ");
+	CURPOSTEXT(14,     1, "Produce coffee            (p)");
+	CURPOSTEXT(15,     1, "Cup removed               (c)");
+	CURPOSTEXT(16,     1, "Descale                   (a)");
+	CURPOSTEXT(17,     1, "Exit programm             (x)");
+	CURPOSTEXT(18,	   1, "Service Mode			     (S)");
+	CURPOSTEXT(20,     1, "Your Choice               < >");
+	CURPOSTEXT(21,     1, "-----------------------------------------------------------------------------");
 }
 
 void Coffeemaker::run (){
@@ -207,86 +225,113 @@ void Coffeemaker::run (){
 	sCupsize vc = regularCup;
 	sStrength vs = sMedium;
     sVessel vv = leftVessel;
-	char vctext[][8]={"TINY   ",  "REGULAR", "LARGE  "};
-	char vstext[][9]={"DELICATE", "MEDIUM  ","STRONG  "};
-    char vvtext[][6]={"LEFT ", "RIGHT"};
+	const char vctext[][8]={"TINY   ",  "REGULAR", "LARGE  "};
+	const char vstext[][9]={"DELICATE", "MEDIUM  ","STRONG  "};
+    const char vvtext[][6]={"LEFT ", "RIGHT"};
+    const char vcstext[][12] = { // coffee sort names
+        "Arabica    ",
+        "Robusta    ",
+        "Liberica   ",
+        "Excelsa    ",
+        "Bourbon    ",
+        "Typica     ",
+        "Caturra    ",
+        "Catimor    ",
+        "Gesha      ", 
+        "Pacamara   "
+    };
 	char chosenkeyclear[2] = " ";
 	
 	Screen();
 	
 	do{
-		CURPOS(18, 28);
+		CURPOS(20, 28);
 		theCommand = getch();
 		switch (theCommand){
 			case 't': {
 				vc = smallCup;
 				CURPOSGREENTEXT(6,  20, vctext[smallCup]); CURPOS(6, 1);
-				CURPOSGREENTEXT(17, 28, chosenkeyclear);
+				CURPOSGREENTEXT(20, 28, chosenkeyclear);
 				break;
 			}
 			case 'r': {
 				vc = regularCup;
 				CURPOSGREENTEXT(6,  20, vctext[regularCup]); CURPOS(6, 1);
-				CURPOSGREENTEXT(17, 28, chosenkeyclear);
+				CURPOSGREENTEXT(20, 28, chosenkeyclear);
 				break;
 			}
 			case 'l': {
 				vc = largeCup;
 				CURPOSGREENTEXT(6,  20, vctext[largeCup]); CURPOS(6, 1);
-				CURPOSGREENTEXT(17, 28, chosenkeyclear);
+				CURPOSGREENTEXT(20, 28, chosenkeyclear);
 				break;
 			}
 			case 'd': {
 				vs = sDelicate;
 				CURPOSGREENTEXT(6,  40, vstext[sDelicate]); CURPOS(6, 1);
-				CURPOSGREENTEXT(17, 28, chosenkeyclear);
+				CURPOSGREENTEXT(20, 28, chosenkeyclear);
 				break;
 			}
 			case 'm': {
 				vs = sMedium;
 				CURPOSGREENTEXT(6,  40, vstext[sMedium]); CURPOS(6, 1);
-				CURPOSGREENTEXT(17, 28, chosenkeyclear);
+				CURPOSGREENTEXT(20, 28, chosenkeyclear);
 				break;
 			}
 			case 's': {
 				vs = sStrong;
 				CURPOSGREENTEXT(6,  40, vstext[sStrong]); CURPOS(6, 1);
-				CURPOSGREENTEXT(17, 28, chosenkeyclear);
+				CURPOSGREENTEXT(20, 28, chosenkeyclear);
 				break;
 			}
 			case 'p': {
 				CURPOSTEXT(12, 32, "            ");
-				CURPOSGREENTEXT(17, 28, chosenkeyclear);
+				CURPOSGREENTEXT(20, 28, chosenkeyclear);
 				drinkable = brewCup(vs, vc); // TODO: Add vessel to brewCup
 				break;
 			}
 			case 'c': {
-				CURPOSGREENTEXT(17, 28, chosenkeyclear);
+				CURPOSGREENTEXT(20, 28, chosenkeyclear);
 				removeCup();
 				break;
 			}
 			case 'a': {
-				CURPOSGREENTEXT(17, 28, chosenkeyclear);
+				CURPOSGREENTEXT(20, 28, chosenkeyclear);
 				descale();
 				break;
 			}
 			case 'y': {
-				CURPOSGREENTEXT(17, 28, chosenkeyclear);
+				CURPOSGREENTEXT(20, 28, chosenkeyclear);
 				Ready();
 				break;
 			}
             case 'L': {
                 vv = leftVessel;
                 CURPOSGREENTEXT(6,  57, vvtext[leftVessel]); CURPOS(6, 1);
-                CURPOSGREENTEXT(17, 28, chosenkeyclear);
+                if(vessels[vv] != NULL) {
+                    CURPOSGREENTEXT(7, 29, vcstext[vessels[vv]->getSort()]); 
+                } else {
+                    CURPOSGREENTEXT(7, 29, "EMPTY");
+                }
+                CURPOS(6, 1);
+                CURPOSGREENTEXT(20, 28, chosenkeyclear);
                 break;
             }
             case 'R': {
                 vv = rightVessel;
-                CURPOSGREENTEXT(6,  57, vvtext[rightVessel]); CURPOS(6, 1);
-                CURPOSGREENTEXT(17, 28, chosenkeyclear);
+                CURPOSGREENTEXT(6, 57, vvtext[rightVessel]); CURPOS(6, 1);
+                if(vessels[vv] != NULL) {
+                    CURPOSGREENTEXT(7, 29, vcstext[vessels[vv]->getSort()]); 
+                } else {
+                    CURPOSGREENTEXT(7, 29, "EMPTY");
+                }
+                CURPOS(6, 1);
+                CURPOSGREENTEXT(20, 28, chosenkeyclear);
                 break;
             }
+			case 'S': {
+                vessels[vv] = changeVessel();
+			}
         }
 	} while(theCommand != 'x');
 	CURPOS(20,1);

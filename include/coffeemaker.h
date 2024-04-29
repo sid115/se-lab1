@@ -19,6 +19,7 @@
 
 #include "globaldefines.h"
 #include "storageVessel.h"
+#include <string>
 
 typedef struct {
 	int mlWater;
@@ -42,6 +43,7 @@ class Coffeemaker
         bool weighCoffee (sVessel vessel, int targetWeightG);
         bool refillCoffee (sVessel vessel, int targetWeightG);
         bool setCoffeeSort (sVessel vessel, sCoffeeSort sort);
+        storageVessel* changeVessel ();
 		void removeCup ();
 		void Ready ();
 		void CleaningError ();

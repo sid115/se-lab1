@@ -9,10 +9,20 @@
 #include "stdafx.h"
 #include "storageVessel.h"
 
+storageVessel::storageVessel()
+{
+    this->weightG = 0;
+    this->sort = sCoffeeSort::Arabica;
+    this->isFull = (weightG == MAXWEIGHT) ? true : false;
+    this->isOpen = false;
+}
+
 storageVessel::storageVessel(float weightG, sCoffeeSort sort)
 {
-    this->weightG = weightG;
-    this->sort = sort;
+    if (weightG < 0) weightG = 0;
+
+    this->weightG = (weightG >= MAXWEIGHT) ? MAXWEIGHT : weightG;
+    this->sort = (sort < 0 || sort >= NUMSORTS) ? sCoffeeSort::Arabica : sort;
     this->isFull = (weightG == MAXWEIGHT) ? true : false;
     this->isOpen = false;
 }

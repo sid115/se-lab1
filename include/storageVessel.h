@@ -15,12 +15,8 @@
 //..begin "pragma"
 #pragma once
 //..end "pragma"
-
-#include <string>
-
-using namespace std;
-
-#define MAXWEIGHT 1000 // maximum weight of coffee beans in gram
+//
+#include "globaldefines.h"
 
 // list of coffee sorts
 typedef enum {
@@ -41,6 +37,7 @@ class storageVessel
     public:
         bool openLid();
         bool closeLid();
+    	storageVessel();
     	storageVessel(float weightG, sCoffeeSort sort);
         ~storageVessel(void);
 

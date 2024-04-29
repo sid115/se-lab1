@@ -38,7 +38,7 @@ class Coffeemaker
 	public:
 		void Screen ();
 		void run ();
-		bool brewCup (sStrength aType, sCupsize bType);
+		bool brewCup (sStrength aType, sCupsize bType, sVessel cType);
 		bool descale ();
         bool weighCoffee (sVessel vessel, int targetWeightG);
         bool refillCoffee (sVessel vessel, int targetWeightG);

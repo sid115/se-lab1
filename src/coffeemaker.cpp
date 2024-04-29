@@ -31,7 +31,7 @@ Coffeemaker::Coffeemaker(void){
 Coffeemaker::~Coffeemaker(void){
 }
 
-bool Coffeemaker::brewCup (sStrength aType, sCupsize bType){
+bool Coffeemaker::brewCup (sStrength aType, sCupsize bType, sVessel cType) {
 	float ActualVolume;
 	int ActualCoffeegrounds;
 	int ActualTemperature;
@@ -53,12 +53,21 @@ bool Coffeemaker::brewCup (sStrength aType, sCupsize bType){
 	snprintf(logline, LOGLINELEN, "Vol %dml, Strength %dg                                               ", Options.mlWater, Options.gCoffeegrounds);
 	CURPOSGREENTEXT(5,  10, logline);
 
+    // Error when coffe in vessel is to low
+	if(vessels[cType]->getWeightG() < Options.gCoffeegrounds + EPSREL * Options.gCoffeegrounds) {
+		CURPOSGREENTEXT(5,  10, "Error during preparation! Please contact service team for refill.     ");
+		goodQuality = false;
+	}
+
 	// Grind coffee beans according to selected cup size and coffee strength
 	ActualCoffeegrounds = mGrinderHandle->grindCoffeebeans(Options.gCoffeegrounds);
 	nanosleep(&productionDuration, &rmD);
 	if (abs(ActualCoffeegrounds-Options.gCoffeegrounds)>(EPSREL * Options.gCoffeegrounds)){
 		goodQuality = false;
 	}
+
+    // Reduce the weight in the vessel 
+	vessels[cType]->setWeightG(vessels[cType]->getWeightG() - ActualCoffeegrounds);
 
 	// Pour in coffee grounds
 	mGrinderHandle->fillBrewingfilter();
@@ -118,9 +127,10 @@ storageVessel* Coffeemaker::changeVessel()
 
     std::ifstream ifs(VESSEL_FILE);
     nlohmann::json j;
+    ifs >> j;
 
-    weightG = j["weightG"];
-    sort = j["sort"];
+    weightG = j.value("weightG", MAXWEIGHT);
+    sort = j.value("sort", sCoffeeSort::Arabica);
 
     return new storageVessel(weightG, sort);
 }
@@ -203,7 +213,7 @@ void Coffeemaker::Screen(void){
 	CURPOSGREENTEXT(4, 1, "Status : Ready                                                               ");
 	CURPOSGREENTEXT(5, 1, "Note   : Please select                                                       ");
 	CURPOSGREENTEXT(6, 1, "Setting: Cup Size: REGULAR,  Strength: MEDIUM,  Vessel: LEFT                 ");
-	CURPOSGREENTEXT(7, 1, "Your selected Coffeesort is 													");//Spalte 29
+	CURPOSGREENTEXT(7, 1, "Your selected Coffeesort is EMPTY                                            ");
 	//X                    1234567890          1234567890          1234567890          1234567890
 	//X                              1234567890          1234567890          1234567890          1234567
 	CURPOSTEXT(9,      1, "-----------------------------------------------------------------------------");
@@ -214,7 +224,7 @@ void Coffeemaker::Screen(void){
 	CURPOSTEXT(15,     1, "Cup removed               (c)");
 	CURPOSTEXT(16,     1, "Descale                   (a)");
 	CURPOSTEXT(17,     1, "Exit programm             (x)");
-	CURPOSTEXT(18,	   1, "Service Mode			     (S)");
+	CURPOSTEXT(18,	   1, "Service Mode              (S)");
 	CURPOSTEXT(20,     1, "Your Choice               < >");
 	CURPOSTEXT(21,     1, "-----------------------------------------------------------------------------");
 }
@@ -287,7 +297,7 @@ void Coffeemaker::run (){
 			case 'p': {
 				CURPOSTEXT(12, 32, "            ");
 				CURPOSGREENTEXT(20, 28, chosenkeyclear);
-				drinkable = brewCup(vs, vc); // TODO: Add vessel to brewCup
+				drinkable = brewCup(vs, vc, vv);
 				break;
 			}
 			case 'c': {
@@ -311,7 +321,7 @@ void Coffeemaker::run (){
                 if(vessels[vv] != NULL) {
                     CURPOSGREENTEXT(7, 29, vcstext[vessels[vv]->getSort()]); 
                 } else {
-                    CURPOSGREENTEXT(7, 29, "EMPTY");
+                    CURPOSGREENTEXT(7, 29, "EMPTY      ");
                 }
                 CURPOS(6, 1);
                 CURPOSGREENTEXT(20, 28, chosenkeyclear);
@@ -323,7 +333,7 @@ void Coffeemaker::run (){
                 if(vessels[vv] != NULL) {
                     CURPOSGREENTEXT(7, 29, vcstext[vessels[vv]->getSort()]); 
                 } else {
-                    CURPOSGREENTEXT(7, 29, "EMPTY");
+                    CURPOSGREENTEXT(7, 29, "EMPTY      ");
                 }
                 CURPOS(6, 1);
                 CURPOSGREENTEXT(20, 28, chosenkeyclear);
@@ -331,6 +341,14 @@ void Coffeemaker::run (){
             }
 			case 'S': {
                 vessels[vv] = changeVessel();
+                if(vessels[vv] != NULL) {
+                    CURPOSGREENTEXT(7, 29, vcstext[vessels[vv]->getSort()]); 
+                } else {
+                    CURPOSGREENTEXT(7, 29, "EMPTY      ");
+                }
+                CURPOS(6, 1);
+                CURPOSGREENTEXT(20, 28, chosenkeyclear);
+
 			}
         }
 	} while(theCommand != 'x');
